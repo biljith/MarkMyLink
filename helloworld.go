@@ -24,5 +24,5 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Fprint(w, "Guess who lost the stone paper scissors bet - Sid Geauxinue.!")
+	fmt.Fprint(w, "Guess who lost the stone paper scissors bet - Sid Geauxinue.")
 }
