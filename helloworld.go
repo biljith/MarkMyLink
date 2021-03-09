@@ -24,5 +24,5 @@ func handle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Fprint(w, "Welcome to Mark My Link.")
+	fmt.Fprint(w, "Welcome to Mark My Link!")
 }
