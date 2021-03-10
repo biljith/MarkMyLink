@@ -14,4 +14,10 @@ Depending on the user's bookmark usage the application will recommend other simi
 1. Google cloud app engine
 2. Golang web app
 
+## Deployment details
+We have set up continuous deployment on Google App Engine as described below :
+1. We used the Google cloud build github application to link our repo with Google cloud build. 
+2. Google cloud build deployed the application to app engine using instructions in cloudbuild-noloop.yaml file. 
+3. Whenever a push into git repo is made, it triggers a build in Google cloud engine and deploys the system accordingly. 
+
 
