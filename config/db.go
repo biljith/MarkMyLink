@@ -20,7 +20,7 @@ import (
 func init() {
 	// get a mongo sessions
 	// connecting to mongodb with authentication.
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://geauxinue:geauxinue@cluster0.xcajc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(""))
 	//session, err := mgo.Dial("mongodb://localhost/BookMarkDB")
 	if err != nil {
 		log.Fatal(err)
