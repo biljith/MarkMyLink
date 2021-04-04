@@ -17,6 +17,8 @@ import (
 //// collections
 //var Bookmark *mgo.Collection
 
+var UserCollection *mongo.Collection
+
 func init() {
 	// get a mongo sessions
 	// connecting to mongodb with authentication.
@@ -40,6 +42,7 @@ func init() {
 	fmt.Println(databases)
 	BookmarkDB := client.Database("BookmarkDB")
 	BookmarkCollection := BookmarkDB.Collection("Bookmarks")
+	UserCollection = client.Database("BookmarkDB").Collection("Users")
 
 	// Writing to DB
 
