@@ -13,6 +13,8 @@ func main() {
 		"/bookmarks", controller.Index)
 	http.HandleFunc(
 		"/signup", controller.Signup)
+	http.HandleFunc(
+		"/login", controller.Login)
 	// this is where the web application will listen
 	http.ListenAndServe(":8080", nil)
 }

@@ -36,3 +36,10 @@ func CreateUser(user *User) bool {
 		}
 	}
 }
+
+func FindUser(email string) (User, error) {
+	var user User
+	err := config.UserCollection.FindOne(context.TODO(),
+										 bson.D{{"email", email}}).Decode(&user)
+	return user, err
+}

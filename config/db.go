@@ -46,40 +46,40 @@ func init() {
 
 	// Writing to DB
 
-	BookmarkResult, err := BookmarkCollection.InsertOne(ctx, bson.D{
-		{Key: "Name" , Value: "Twitter"},
-		{Key: "Link" , Value: "www.twitter.com"},
-		{Key: "ViewCount" , Value: 1},
-		{Key: "Timestamp" , Value:"2020-11-10 23:00:00 +0000 UTC m=+0.000000000"},
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(BookmarkResult.InsertedID)
+	// BookmarkResult, err := BookmarkCollection.InsertOne(ctx, bson.D{
+	// 	{Key: "Name" , Value: "Twitter"},
+	// 	{Key: "Link" , Value: "www.twitter.com"},
+	// 	{Key: "ViewCount" , Value: 1},
+	// 	{Key: "Timestamp" , Value:"2020-11-10 23:00:00 +0000 UTC m=+0.000000000"},
+	// })
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println(BookmarkResult.InsertedID)
 
-	// Reading from DB
+	// // Reading from DB
 
-	cursor, err := BookmarkCollection.Find(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer cursor.Close(ctx)
-	for cursor.Next(ctx) {
-		var bookmark bson.M
-		if err = cursor.Decode(&bookmark); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(bookmark)
-	}
+	// cursor, err := BookmarkCollection.Find(ctx, bson.M{})
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer cursor.Close(ctx)
+	// for cursor.Next(ctx) {
+	// 	var bookmark bson.M
+	// 	if err = cursor.Decode(&bookmark); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	fmt.Println(bookmark)
+	// }
 
-	// Filter Docs with attributes
-	filterCursor, err := BookmarkCollection.Find(ctx, bson.M{"Name": "twitter"})
-	if err != nil {
-		log.Fatal(err)
-	}
-	var bookmarksFiltered []bson.M
-	if err = filterCursor.All(ctx, &bookmarksFiltered); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(bookmarksFiltered)
+	// // Filter Docs with attributes
+	// filterCursor, err := BookmarkCollection.Find(ctx, bson.M{"Name": "twitter"})
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// var bookmarksFiltered []bson.M
+	// if err = filterCursor.All(ctx, &bookmarksFiltered); err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println(bookmarksFiltered)
 }
