@@ -9,8 +9,7 @@ import (
 func main() {
 	http.HandleFunc("/", index)
 	// handles the URL 'localhost:8080/bookmarks
-	http.HandleFunc(
-		"/bookmarks", controller.Index)
+	http.HandleFunc("/bookmarks", controller.Index)
 	// this is where the web application will listen
 	http.ListenAndServe(":8080", nil)
 }

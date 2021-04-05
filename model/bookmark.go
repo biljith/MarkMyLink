@@ -3,7 +3,12 @@ package model
 
 
 import (
-//"MarkMyLink/config"
+"MarkMyLink/config"
+"go.mongodb.org/mongo-driver/bson"
+//"go.mongodb.org/mongo-driver/mongo"
+"context"
+"log"
+"fmt"
 //"gopkg.in/mgo.v2/bson"
 )
 
@@ -11,17 +16,23 @@ import (
 type BookMarkCat struct {
 	Name       string        `bson:"Name"`
 	Link       string        `bson:"Link"`
-	Viewcount 	int			 `bson:"Viewcount"`
+	Viewcount  string			 `bson:"Viewcount"`
 	Timestamp  string        `bson:"Timestamp"`
 }
 
 func AllBookMarks() ([]BookMarkCat, error) {
 
+	//var bm []BookMarkCat
 	bm := []BookMarkCat{}
+	bmCursor, err := config.BookmarkCollection.Find(context.TODO(), bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	//err := config.Bookmark.Find(bson.M{}).All(&bm)
-	//if err != nil {
-	//	return nil, err
-	//}
+	if err = bmCursor.All(context.TODO(), &bm); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Hi")
+	fmt.Println(bm)
 	return bm, nil
 }
