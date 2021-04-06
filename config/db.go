@@ -17,7 +17,6 @@ import (
 //// collections
 //var Bookmark *mgo.Collection
 
-var BookmarkCollection *mongo.Collection
 var CTX context.Context
 var UserCollection *mongo.Collection
 var SessionCollection *mongo.Collection
@@ -26,7 +25,7 @@ var BookmarkCollection *mongo.Collection
 func init() {
 	// get a mongo sessions
 	// connecting to mongodb with authentication.
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://diddlz:terimarzi69@cluster0.l0c9p.mongodb.net/BookmarkDB?retryWrites=true&w=majority"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(""))
 	//session, err := mgo.Dial("mongodb://localhost/BookMarkDB")
 	if err != nil {
 		log.Fatal(err)
