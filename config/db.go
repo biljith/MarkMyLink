@@ -18,11 +18,13 @@ import (
 //var Bookmark *mgo.Collection
 
 var UserCollection *mongo.Collection
+var SessionCollection *mongo.Collection
+var BookmarkCollection *mongo.Collection
 
 func init() {
 	// get a mongo sessions
 	// connecting to mongodb with authentication.
-	client, err := mongo.NewClient(options.Client().ApplyURI(""))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://diddlz:terimarzi69@cluster0.l0c9p.mongodb.net/BookmarkDB?retryWrites=true&w=majority"))
 	//session, err := mgo.Dial("mongodb://localhost/BookMarkDB")
 	if err != nil {
 		log.Fatal(err)
@@ -40,9 +42,10 @@ func init() {
 	databases, err := client.ListDatabaseNames(ctx, bson.M{})
 
 	fmt.Println(databases)
-	BookmarkDB := client.Database("BookmarkDB")
-	BookmarkCollection := BookmarkDB.Collection("Bookmarks")
+	// BookmarkDB := client.Database("BookmarkDB")
+	BookmarkCollection = client.Database("BookmarkDB").Collection("Bookmarks")
 	UserCollection = client.Database("BookmarkDB").Collection("Users")
+	SessionCollection = client.Database("BookmarkDB").Collection("Sessions")
 
 	// Writing to DB
 
