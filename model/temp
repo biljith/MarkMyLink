@@ -1,0 +1,1 @@
+{"_id":{"$oid":"606bbf3c6f849e5ae9c2b462"},"email":"biljithjayan@gmail.com","createdAt":{"$date":{"$numberLong":"1617673758000"}},"token":"abc"}
