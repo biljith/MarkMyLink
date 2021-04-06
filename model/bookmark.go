@@ -16,8 +16,12 @@ import (
 type BookMarkCat struct {
 	Name       string        `bson:"Name"`
 	Link       string        `bson:"Link"`
-	Viewcount  string			 `bson:"Viewcount"`
+	Viewcount  string		 `bson:"Viewcount"`
 	Timestamp  string        `bson:"Timestamp"`
+}
+
+func InsertBookmark() (BookMarkCat, error) {
+	// insert one bm code
 }
 
 func AllBookMarks() ([]BookMarkCat, error) {
