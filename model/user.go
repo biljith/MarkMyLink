@@ -5,7 +5,6 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"context"
-	"log"
 )
 
 // BookMark struct()
@@ -19,8 +18,6 @@ type User struct {
 // Create a new user in the collection Users. Returns false if user with same email
 // already exists. True otherwise.
 func CreateUser(user *User) bool {
-	log.Printf("Creating user")
-
 	var userWithSameEmail User
 	err := config.UserCollection.FindOne(context.TODO(),
 										 bson.D{{"email", user.Email}}).Decode(&userWithSameEmail)
