@@ -25,7 +25,7 @@ var BookmarkCollection *mongo.Collection
 func init() {
 	// get a mongo sessions
 	// connecting to mongodb with authentication.
-	client, err := mongo.NewClient(options.Client().ApplyURI(""))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://diddlz:terimarzi69@cluster0.l0c9p.mongodb.net/BookMarkDB?retryWrites=true&w=majority"))
 	//session, err := mgo.Dial("mongodb://localhost/BookMarkDB")
 	if err != nil {
 		log.Fatal(err)
