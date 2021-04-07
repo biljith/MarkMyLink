@@ -3,14 +3,21 @@ package controller
 import (
 	"MarkMyLink/config"
 	"MarkMyLink/model"
-
 	"net/http"
+	"fmt"
+	//"encoding/json"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/google/uuid"
 	"github.com/gorilla/schema"
 	"log"
 	"time"
 )
+
+func AddBookmark(w http.ResponseWriter, r *http.Request) {
+	// logic to add bookmark
+	//1. check for a logged in user and extract the user object
+	//2. create in db
+}
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	// Check if user is logged in.
@@ -41,7 +48,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500)+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println("in controller")
+	fmt.Println(bm)
 	config.TPL.ExecuteTemplate(w, "index.gohtml", bm)
 }
 

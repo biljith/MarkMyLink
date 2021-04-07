@@ -18,6 +18,7 @@ import (
 //// collections
 //var Bookmark *mgo.Collection
 
+var CTX context.Context
 var UserCollection *mongo.Collection
 var SessionCollection *mongo.Collection
 var BookmarkCollection *mongo.Collection
@@ -33,6 +34,7 @@ func init() {
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	CTX = ctx
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -48,6 +50,9 @@ func init() {
 	BookmarkCollection = client.Database("BookmarkDB").Collection("Bookmarks")
 	UserCollection = client.Database("BookmarkDB").Collection("Users")
 	SessionCollection = client.Database("BookmarkDB").Collection("Sessions")
+	fmt.Println(BookmarkCollection)
+	fmt.Println(UserCollection)
+	fmt.Println(SessionCollection)
 
 	// Writing to DB
 

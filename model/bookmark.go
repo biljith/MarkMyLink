@@ -4,15 +4,17 @@ package model
 
 import (
 	"MarkMyLink/config"
-	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"context"
+	//"log"
+	//"fmt"
 )
 
 // BookMark struct()
 type Bookmark struct {
 	Name       string        `bson:"Name"`
 	Link       string        `bson:"Link"`
-	Viewcount 	int			 `bson:"Viewcount"`
+	Viewcount  string		 `bson:"Viewcount"`
 	Timestamp  string        `bson:"Timestamp"`
 }
 
@@ -20,10 +22,11 @@ func AllBookmarks() ([]Bookmark, error) {
 
 	bm := []Bookmark{}
 
-	//err := config.Bookmark.Find(bson.M{}).All(&bm)
-	//if err != nil {
-	//	return nil, err
+	//if err = bmCursor.All(context.TODO(), &bm); err != nil {
+	//	log.Fatal(err)
 	//}
+	//fmt.Println("Hi")
+	//fmt.Println(bm)
 	return bm, nil
 }
 
