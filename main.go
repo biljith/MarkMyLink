@@ -4,6 +4,7 @@ package main
 import (
 	"MarkMyLink/controller"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -14,6 +15,10 @@ func main() {
 
 	//http.HandleFunc("/", index)
 	// handles the URL 'localhost:8080/bookmarks
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	http.HandleFunc(
 		"/bookmarks", controller.Index)
 	http.HandleFunc(
@@ -21,7 +26,7 @@ func main() {
 	http.HandleFunc(
 		"/login", controller.Login)
 	// this is where the web application will listen
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":" + port, nil)
 }
 
 func index(w http.ResponseWriter, r *http.Request) {

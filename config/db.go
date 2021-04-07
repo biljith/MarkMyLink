@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
 	"time"
+	"os"
 )
 
 //// database
@@ -24,7 +25,8 @@ var BookmarkCollection *mongo.Collection
 func init() {
 	// get a mongo sessions
 	// connecting to mongodb with authentication.
-	client, err := mongo.NewClient(options.Client().ApplyURI(""))
+	databaseURI := os.Getenv("DATABASE_URI")
+	client, err := mongo.NewClient(options.Client().ApplyURI(databaseURI))
 	//session, err := mgo.Dial("mongodb://localhost/BookMarkDB")
 	if err != nil {
 		log.Fatal(err)
