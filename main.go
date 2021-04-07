@@ -12,7 +12,7 @@ func main() {
 	fs := http.FileServer(http.Dir("./templates"))
 	http.Handle("/templates/", http.StripPrefix("/templates/", fs))
 
-	http.HandleFunc("/", index)
+	//http.HandleFunc("/", index)
 	// handles the URL 'localhost:8080/bookmarks
 	http.HandleFunc(
 		"/bookmarks", controller.Index)

@@ -5,9 +5,10 @@ import (
 	"MarkMyLink/model"
 	"net/http"
 	"fmt"
-	"encoding/json"
+	//"encoding/json"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/google/uuid"
+	"github.com/gorilla/schema"
 	"log"
 	"time"
 )
@@ -23,8 +24,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("session_token")
 	if err != nil {
 		if err == http.ErrNoCookie {
-			http.Error(w, http.StatusText(401), http.StatusUnauthorized)
-			log.Fatal(err)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
@@ -44,7 +44,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	bm, err := model.FindBookmarks(session.Email)
-	log.Printf("%v", bm)
 	if err != nil {
 		http.Error(w, http.StatusText(500)+err.Error(), http.StatusInternalServerError)
 		return
@@ -71,11 +70,25 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &model.User{}
-	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+	err := r.ParseForm()
+	if err != nil {
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 		return
 	}
+	user := new(model.User)
+	decoder := schema.NewDecoder()
+
+	err = decoder.Decode(user, r.PostForm)
+	if err != nil {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	// user := &model.User{}
+	// if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+	// 	http.Error(w, http.StatusText(400), http.StatusBadRequest)
+	// 	return
+	// }
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -97,11 +110,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginUser := &model.User{}
-	if err := json.NewDecoder(r.Body).Decode(loginUser); err != nil {
+	err := r.ParseForm()
+	if err != nil {
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 		return
 	}
+	loginUser := new(model.User)
+	decoder := schema.NewDecoder()
+
+	err = decoder.Decode(loginUser, r.PostForm)
+	if err != nil {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	// loginUser := &model.User{}
+	// if err := json.NewDecoder(r.Body).Decode(loginUser); err != nil {
+	// 	http.Error(w, http.StatusText(400), http.StatusBadRequest)
+	// 	return
+	// }
 
 	storedUser, err := model.FindUser(loginUser.Email)
 	if err != nil {
@@ -130,4 +157,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Value:   sessionToken,
 		Expires: session.CreatedAt.Add(3600 * time.Second),
 	})
+
+	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
 }
