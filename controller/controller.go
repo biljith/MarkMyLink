@@ -3,20 +3,175 @@ package controller
 import (
 	"MarkMyLink/config"
 	"MarkMyLink/model"
-	"net/http"
-	"fmt"
-	//"encoding/json"
-	"golang.org/x/crypto/bcrypt"
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/gorilla/schema"
+	"io"
+	"io/ioutil"
+	"net/http"
+	//"encoding/json"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
 )
-
+// Make sure that frontend sends the POST body in the json format.
+//{
+//"email": "biljithjayan@gmail.com",
+//"name": "youtube",
+//"link": "www.youtube.com",
+//"viewcount": "1",
+//"timestamp": "2020-11-10 23:00:00 +0000 UTC m=+0.000000000"
+//}
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
-	// logic to add bookmark
-	//1. check for a logged in user and extract the user object
-	//2. create in db
+	// Check if user is logged in.
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+	sessionToken := c.Value
+	_, err = model.FindSession(sessionToken)
+	if err != nil {
+		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
+		log.Fatal(err)
+		return
+	}
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	if err != nil {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+	var bookmark model.Bookmark
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	if err != nil {
+		panic(err)
+	}
+	if err := r.Body.Close(); err != nil {
+		panic(err)
+	}
+	if err := json.Unmarshal(body, &bookmark); err != nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(422) // unprocessable entity
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+		panic(err)
+	}
+	}
+
+	if !model.CreateBookmark(bookmark) {
+		http.Error(w, http.StatusText(409), http.StatusConflict)
+		return
+	}
+	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
+}
+// Make sure that frontend sends the POST body in the json format.
+//{
+//"email": "biljithjayan@gmail.com",
+//"name": "youtube",
+//"link": "www.youtube.com",
+//"viewcount": "1",
+//"timestamp": "2020-11-10 23:00:00 +0000 UTC m=+0.000000000"
+//}
+func UpdateBookmark(w http.ResponseWriter, r *http.Request) {
+	// Check if user is logged in.
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+	sessionToken := c.Value
+	_, err = model.FindSession(sessionToken)
+	if err != nil {
+		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
+		log.Fatal(err)
+		return
+	}
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+	var bookmark model.Bookmark
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	if err != nil {
+		panic(err)
+	}
+	if err := r.Body.Close(); err != nil {
+		panic(err)
+	}
+	if err := json.Unmarshal(body, &bookmark); err != nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(422) // unprocessable entity
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)
+		}
+	}
+	if !model.UpdateBookmark(bookmark) {
+		http.Error(w, http.StatusText(409), http.StatusConflict)
+		return
+	}
+	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
+}
+// Make sure that frontend sends the POST body in the json format.
+//{
+//"email": "biljithjayan@gmail.com",
+//"name": "youtube",
+//"link": "www.youtube.com",
+//"viewcount": "1",
+//"timestamp": "2020-11-10 23:00:00 +0000 UTC m=+0.000000000"
+//}
+func DeleteBookmark(w http.ResponseWriter, r *http.Request) {
+	// Check if user is logged in.
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+	sessionToken := c.Value
+	_, err = model.FindSession(sessionToken)
+	if err != nil {
+		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
+		log.Fatal(err)
+		return
+	}
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+	var bookmark model.Bookmark
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
+	if err != nil {
+		panic(err)
+	}
+	if err := r.Body.Close(); err != nil {
+		panic(err)
+	}
+	if err := json.Unmarshal(body, &bookmark); err != nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(422) // unprocessable entity
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)
+		}
+	}
+	if !model.DeleteBookmark(bookmark) {
+		http.Error(w, http.StatusText(409), http.StatusConflict)
+		return
+	}
+	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -48,8 +203,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500)+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("in controller")
-	fmt.Println(bm)
 	config.TPL.ExecuteTemplate(w, "index.gohtml", bm)
 }
 
