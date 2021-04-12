@@ -25,6 +25,12 @@ func main() {
 		"/signup", controller.Signup)
 	http.HandleFunc(
 		"/login", controller.Login)
+	http.HandleFunc(
+		"/addBookmark", controller.AddBookmark)
+	http.HandleFunc(
+		"/updateBookmark", controller.UpdateBookmark)
+	http.HandleFunc(
+		"/deleteBookmark", controller.DeleteBookmark)
 	// this is where the web application will listen
 	http.ListenAndServe(":" + port, nil)
 }
