@@ -10,8 +10,8 @@ import (
 func main() {
 	// Documentation for serving static files - 
 	// https://www.alexedwards.net/blog/serving-static-sites-with-go
-	fs := http.FileServer(http.Dir("./templates"))
-	http.Handle("/templates/", http.StripPrefix("/templates/", fs))
+	fs := http.FileServer(http.Dir("./client/build"))
+	http.Handle("/", fs)
 
 	//http.HandleFunc("/", index)
 	// handles the URL 'localhost:8080/bookmarks
