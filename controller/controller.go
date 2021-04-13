@@ -8,9 +8,10 @@ import (
 	//"encoding/json"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/google/uuid"
-	"github.com/gorilla/schema"
+	// "github.com/gorilla/schema"
 	"log"
 	"time"
+	"encoding/json"
 )
 
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
@@ -63,32 +64,25 @@ func Index(w http.ResponseWriter, r *http.Request) {
  * }
  */
 func Signup(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		// http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
-		// return
-		http.ServeFile(w, r, "templates/signup.gohtml")
-		return
-	}
-
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-	user := new(model.User)
-	decoder := schema.NewDecoder()
-
-	err = decoder.Decode(user, r.PostForm)
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	// user := &model.User{}
-	// if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+	// err := r.ParseForm()
+	// if err != nil {
 	// 	http.Error(w, http.StatusText(400), http.StatusBadRequest)
 	// 	return
 	// }
+	// user := new(model.User)
+	// decoder := schema.NewDecoder()
+
+	// err = decoder.Decode(user, r.PostForm)
+	// if err != nil {
+	// 	http.Error(w, http.StatusText(400), http.StatusBadRequest)
+	// 	return
+	// }
+
+	user := &model.User{}
+	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -99,10 +93,11 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(409), http.StatusConflict)
 		return
 	}
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Login")
 	if r.Method != "POST" {
 		// http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		// return
@@ -110,25 +105,26 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-	loginUser := new(model.User)
-	decoder := schema.NewDecoder()
-
-	err = decoder.Decode(loginUser, r.PostForm)
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-
-	// loginUser := &model.User{}
-	// if err := json.NewDecoder(r.Body).Decode(loginUser); err != nil {
+	// err := r.ParseForm()
+	// if err != nil {
 	// 	http.Error(w, http.StatusText(400), http.StatusBadRequest)
 	// 	return
 	// }
+	// loginUser := new(model.User)
+	// decoder := schema.NewDecoder()
+
+	// err = decoder.Decode(loginUser, r.PostForm)
+	// if err != nil {
+	// 	http.Error(w, http.StatusText(400), http.StatusBadRequest)
+	// 	return
+	// }
+	loginUser := &model.User{}
+	if err := json.NewDecoder(r.Body).Decode(loginUser); err != nil {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	
 
 	storedUser, err := model.FindUser(loginUser.Email)
 	if err != nil {
@@ -151,12 +147,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	log.Printf(sessionToken)
+	json.NewEncoder(w).Encode(struct{
+		Token string `json:"token"`
+	}{Token: sessionToken})
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:    "session_token",
+	// 	Value:   sessionToken,
+	// 	Expires: session.CreatedAt.Add(3600 * time.Second),
+	// })
 
-	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: session.CreatedAt.Add(3600 * time.Second),
-	})
-
-	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
+	// http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
 }
