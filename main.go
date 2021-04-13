@@ -10,6 +10,10 @@ import (
 func main() {
 	// Documentation for serving static files - 
 	// https://www.alexedwards.net/blog/serving-static-sites-with-go
+	http.HandleFunc(
+		"/signup", controller.Signup)
+	http.HandleFunc(
+		"/login", controller.Login)
 	fs := http.FileServer(http.Dir("./client/build"))
 	http.Handle("/", fs)
 
@@ -19,18 +23,21 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	http.HandleFunc(
-		"/bookmarks", controller.Index)
-	http.HandleFunc(
-		"/signup", controller.Signup)
-	http.HandleFunc(
-		"/login", controller.Login)
-	http.HandleFunc(
-		"/addBookmark", controller.AddBookmark)
-	http.HandleFunc(
-		"/updateBookmark", controller.UpdateBookmark)
-	http.HandleFunc(
-		"/deleteBookmark", controller.DeleteBookmark)
+	// Commenting out below code. Uncomment after adding react UI.
+	// http.HandleFunc(
+	// 	"/bookmarks", controller.Index)
+	// http.HandleFunc(
+	// 	"/signup", controller.Signup)
+	// http.HandleFunc(
+	// 	"/login", controller.Login)
+	// http.HandleFunc(
+	// 	"/addBookmark", controller.AddBookmark)
+	// http.HandleFunc(
+	// 	"/updateBookmark", controller.UpdateBookmark)
+	// http.HandleFunc(
+	// 	"/deleteBookmark", controller.DeleteBookmark)
+	// http.HandleFunc(
+	// 	"/bookmarks", controller.Index)
 	// this is where the web application will listen
 	http.ListenAndServe(":" + port, nil)
 }
