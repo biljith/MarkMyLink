@@ -31,7 +31,7 @@ function Login ({setToken}) {
         function(response) {
           const token =  response['token'];
           console.log(token);
-          history.push("/bookmarks")
+          history.push("/")
           localStorage.setItem('token', token)
           setToken(token);
         },
