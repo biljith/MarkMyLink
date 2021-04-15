@@ -14,6 +14,8 @@ func main() {
 		"/signup", controller.Signup)
 	http.HandleFunc(
 		"/login", controller.Login)
+	http.HandleFunc(
+		"/bookmarks", controller.GetBookmarks)
 	fs := http.FileServer(http.Dir("./client/build"))
 	http.Handle("/", fs)
 

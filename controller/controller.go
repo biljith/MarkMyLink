@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"MarkMyLink/config"
+	// "MarkMyLink/config"
 	"MarkMyLink/model"
 	"io"
 	"io/ioutil"
@@ -173,27 +173,27 @@ func DeleteBookmark(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
+type Token struct {
+	Token string
+}
+
+func GetBookmarks(w http.ResponseWriter, r *http.Request) {
+	// if r.Method != "GET" {
+	// 	http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+	// 	return
+	// }
+
+	var jsonToken Token
 	// Check if user is logged in.
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-	sessionToken := c.Value
+	err := json.NewDecoder(r.Body).Decode(&jsonToken)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+	sessionToken := jsonToken.Token
 	session, err := model.FindSession(sessionToken)
 	if err != nil {
 		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
-		log.Fatal(err)
-		return
-	}
-
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -202,7 +202,14 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(500)+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	config.TPL.ExecuteTemplate(w, "index.gohtml", bm)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	bookmarksJson, err := json.Marshal(bm)
+	if err != nil {
+		// Deal with it
+		log.Fatal(err)
+	}
+	w.Write(bookmarksJson)
 }
 
 
