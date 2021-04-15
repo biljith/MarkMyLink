@@ -1,6 +1,7 @@
 import { createMedia } from '@artsy/fresnel'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
+import {Card} from 'semantic-ui-react'
 import Bookmark from './Bookmark.js'
 import {
     Button,
@@ -208,13 +209,48 @@ ResponsiveContainer.propTypes = {
     children: PropTypes.node,
 }
 
-const HomepageLayout = () => (
+function HomepageLayout(props) { 
+    const [bookmarks, setBookmarks] = useState([]);
+    const [fetched, setFetched] = useState(false)
+    console.log('Billy', props.token)
+    const fetchBookmarks = async () => {
+        var token = props.token
+        await fetch('/bookmarks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token
+          })
+        }).then(response => response.json())
+          .then(function(data) {
+            console.log('Billy', data)
+            setBookmarks(data)
+            setFetched(true)
+          },
+          function(err) {
+
+          });
+    }
+    if (!fetched)
+        fetchBookmarks(props);
+    
+    return (
     <ResponsiveContainer>
         <Segment style={{ padding: '8em 0em' }} vertical>
             <Grid container stackable verticalAlign='middle'>
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <Bookmark></Bookmark>
+                        <Card.Group>
+                            {
+                                bookmarks.map(function(bookmark) {
+                                    return (
+                                        <Bookmark name = { bookmark.Name} link={ bookmark.Link } />
+                                    );
+                                })
+                            }
+                        </Card.Group>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -315,6 +351,7 @@ const HomepageLayout = () => (
         </Segment>
     </ResponsiveContainer>
 )
+} 
 
 export default HomepageLayout
 // import React from 'react'

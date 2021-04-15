@@ -25,7 +25,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/">
-            <Home />
+            <Home token={token}/>
           </Route>
         </Switch>
       </BrowserRouter>
