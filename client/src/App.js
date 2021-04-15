@@ -1,5 +1,5 @@
 import './App.css';
-import Bookmark from './components/Bookmark.js';
+import Home from './components/Home.js';
 import Login from './components/Login.js'
 import Signup from './components/Signup.js'
 
@@ -25,7 +25,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/">
-            <Bookmark />
+            <Home />
           </Route>
         </Switch>
       </BrowserRouter>
