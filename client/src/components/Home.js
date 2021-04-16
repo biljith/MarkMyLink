@@ -74,6 +74,11 @@ class DesktopContainer extends Component {
     hideFixedMenu = () => this.setState({ fixed: false })
     showFixedMenu = () => this.setState({ fixed: true })
 
+    logout = () => {
+        localStorage.removeItem('token');
+        window.location.reload(false);
+    }
+
     render() {
         const { children } = this.props
         const { fixed } = this.state
@@ -105,7 +110,7 @@ class DesktopContainer extends Component {
                                 <Menu.Item as='a'>Work</Menu.Item>
                                 <Menu.Item as='a'>Company</Menu.Item>
                                 <Menu.Item as='a'>Careers</Menu.Item>
-                                <Menu.Item position='right'>
+                                <Menu.Item position='right' onClick={this.logout}>
                                     <Button as='a' inverted={!fixed}>
                                         Log Out
                                     </Button>
