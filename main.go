@@ -34,10 +34,10 @@ func main() {
 	// 	"/login", controller.Login)
 	http.HandleFunc(
 		"/addBookmark", controller.AddBookmark)
-	// http.HandleFunc(
-	// 	"/updateBookmark", controller.UpdateBookmark)
-	// http.HandleFunc(
-	// 	"/deleteBookmark", controller.DeleteBookmark)
+	 http.HandleFunc(
+	 	"/updateBookmark", controller.UpdateBookmark)
+	 http.HandleFunc(
+	 	"/deleteBookmark", controller.DeleteBookmark)
 	// http.HandleFunc(
 	// 	"/bookmarks", controller.Index)
 	// this is where the web application will listen
