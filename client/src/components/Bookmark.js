@@ -21,13 +21,28 @@ export default class Bookmark extends Component{
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra centered>
-                        <div className='ui three buttons' textAlign="center">
-                            <Button.Group centered>
-                                <Button >View</Button>
-                                <Button>Edit</Button>
-                                <Button>Delete</Button>
-                            </Button.Group>
-                        </div>
+                        {/*<div className='ui three buttons' textAlign="center">*/}
+                        <Button.Group widths={'3'}>
+                            <Button floated='left' animated={"fade"} as='a' href={'https://'+this.props.link}>
+                                <Button.Content hidden>View</Button.Content>
+                                <Button.Content visible>
+                                    <Icon name='eye' />
+                                </Button.Content>
+                            </Button>
+                            <Button animated={"fade"}>
+                                <Button.Content hidden>Edit</Button.Content>
+                                <Button.Content visible>
+                                    <Icon name='edit' />
+                                </Button.Content>
+                            </Button>
+                            <Button floated='left' animated={"fade"} onClick={this.handleDelete}>
+                                <Button.Content hidden>Delete</Button.Content>
+                                <Button.Content visible>
+                                    <Icon name='delete' />
+                                </Button.Content>
+                            </Button>
+                        </Button.Group>
+                        {/*</div>*/}
                     </Card.Content>
                 </Card>
         )
