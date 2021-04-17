@@ -12,6 +12,8 @@ import (
 	"log"
 	"time"
 	"encoding/json"
+	"os"
+	"fmt"
 )
 // Make sure that frontend sends the POST body in the json format.
 //{
@@ -21,54 +23,58 @@ import (
 //"viewcount": "1",
 //"timestamp": "2020-11-10 23:00:00 +0000 UTC m=+0.000000000"
 //}
+
+
+type Token struct {
+	Token string
+}
+type TokenAndLink struct {
+	Token string `bson:"token"`
+	Link string  `bson:"link"`
+	Name string  `bson:"name"`
+}
+type LinkPreviewResponse struct {
+	Title string `bson:"title"`
+	Description string `bson:"description"`
+	Image string `bson:"image"`
+	Url string `bson:"url"`
+}
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
 	// Check if user is logged in.
-	c, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
-	sessionToken := c.Value
-	_, err = model.FindSession(sessionToken)
+	var tl TokenAndLink
+	// Check if user is logged in.
+	err := json.NewDecoder(r.Body).Decode(&tl)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+	sessionToken := tl.Token
+	session, err := model.FindSession(sessionToken)
 	if err != nil {
 		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
-		log.Fatal(err)
-		return
-	}
-	if r.Method != "POST" {
-		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
 
-	if err != nil {
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-		return
-	}
 	var bookmark model.Bookmark
-	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
-	if err != nil {
-		panic(err)
-	}
-	if err := r.Body.Close(); err != nil {
-		panic(err)
-	}
-	if err := json.Unmarshal(body, &bookmark); err != nil {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(422) // unprocessable entity
-		if err := json.NewEncoder(w).Encode(err); err != nil {
-		panic(err)
-	}
-	}
+	bookmark.Name = tl.Name
+	bookmark.Link = tl.Link
+	bookmark.Email = session.Email
 
+	url := "http://api.linkpreview.net/?key=%s&q=%s"
+	linkPreviewAPIKey := os.Getenv("LINK_PREVIEW_API_KEY")
+	res, err := http.Get(fmt.Sprintf(url, linkPreviewAPIKey, bookmark.Link))
+	if err != nil {
+		log.Printf("couldn't find link preview")
+	}
+	defer res.Body.Close()
+	linkPreview := &LinkPreviewResponse{}
+	json.NewDecoder(res.Body).Decode(linkPreview)
+	bookmark.Image = linkPreview.Image
+	bookmark.Description = linkPreview.Description
 	if !model.CreateBookmark(bookmark) {
 		http.Error(w, http.StatusText(409), http.StatusConflict)
 		return
 	}
-	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
 }
 // Make sure that frontend sends the POST body in the json format.
 //{
@@ -171,10 +177,6 @@ func DeleteBookmark(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/bookmarks", http.StatusSeeOther)
-}
-
-type Token struct {
-	Token string
 }
 
 func GetBookmarks(w http.ResponseWriter, r *http.Request) {

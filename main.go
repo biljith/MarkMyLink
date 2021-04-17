@@ -32,8 +32,8 @@ func main() {
 	// 	"/signup", controller.Signup)
 	// http.HandleFunc(
 	// 	"/login", controller.Login)
-	// http.HandleFunc(
-	// 	"/addBookmark", controller.AddBookmark)
+	http.HandleFunc(
+		"/addBookmark", controller.AddBookmark)
 	// http.HandleFunc(
 	// 	"/updateBookmark", controller.UpdateBookmark)
 	// http.HandleFunc(

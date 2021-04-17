@@ -19,6 +19,8 @@ type Bookmark struct {
 	Link       string        `bson:"link"`
 	Viewcount  string		 `bson:"viewcount"`
 	Timestamp  string        `bson:"timestamp"`
+	Image string `bson:"image"`
+	Description string `bson:"description"`
 }
 
 func FindBookmarks(email string) ([]Bookmark, error) {
