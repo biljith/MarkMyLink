@@ -155,6 +155,7 @@ func GetBookmarks(w http.ResponseWriter, r *http.Request) {
 
 	bm, err := model.FindBookmarks(session.Email)
 	if err != nil {
+		log.Fatal(err)
 		http.Error(w, http.StatusText(500)+err.Error(), http.StatusInternalServerError)
 		return
 	}

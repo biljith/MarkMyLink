@@ -2,7 +2,7 @@ import { createMedia } from '@artsy/fresnel'
 import PropTypes from 'prop-types'
 import React, { Component, useState, useEffect } from 'react'
 import {Card} from 'semantic-ui-react'
-import Bookmark from './Bookmark.js'
+import Bookmark, {BookmarkModal} from './Bookmark.js'
 import {
     Button,
     Container,
@@ -53,10 +53,7 @@ const HomepageHeading = ({ mobile }) => (
                 marginTop: mobile ? '0.5em' : '1.5em',
             }}
         />
-        <Button primary size='huge'>
-            Get Started
-            <Icon name='right arrow' />
-        </Button>
+        <BookmarkModal/>
     </Container>
 )
 
@@ -244,7 +241,7 @@ function HomepageLayout(props) {
     return (
     <ResponsiveContainer>
         <Segment style={{ padding: '8em 0em' }} vertical>
-            <Grid container stackable verticalAlign='middle'>
+            <Grid container stackable verticalAlign='middle' horizontalAlign='middle'>
                 <Grid.Row>
                     <Grid.Column width={16}>
                         <Card.Group>
