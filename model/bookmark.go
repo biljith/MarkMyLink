@@ -17,7 +17,7 @@ type Bookmark struct {
 	Email  string		 `bson:"email"`
 	Name       string        `bson:"name"`
 	Link       string        `bson:"link"`
-	Viewcount  string		 `bson:"viewcount"`
+	Viewcount  int		 `bson:"viewcount"`
 	Timestamp  string        `bson:"timestamp"`
 	Image string `bson:"image"`
 	Description string `bson:"description"`
