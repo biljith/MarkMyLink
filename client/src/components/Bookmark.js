@@ -12,12 +12,12 @@ export default class Bookmark extends Component{
                         <Image
                             floated='right'
                             size='mini'
-                            src='/images/avatar/large/steve.jpg'
+                            src={this.props.image}
                         />
                         <Card.Header>{this.props.name}</Card.Header>
                         <Card.Meta>{this.props.link}</Card.Meta>
                         <Card.Description>
-                            Steve wants to add you to the group <strong>best friends</strong>
+                            {this.props.description}
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra centered>

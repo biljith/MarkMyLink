@@ -251,7 +251,7 @@ function HomepageLayout(props) {
                             {
                                 bookmarks.map(function(bookmark) {
                                     return (
-                                        <Bookmark name = { bookmark.Name} link={ bookmark.Link } />
+                                        <Bookmark name = { bookmark.Name} link={ bookmark.Link } image = {bookmark.Image} description = {bookmark.Description} />
                                     );
                                 })
                             }
