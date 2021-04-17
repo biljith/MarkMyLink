@@ -96,6 +96,9 @@ export default class Bookmark extends Component{
     render() {
         return (
                 <Card>
+                    <Label color="teal" floating>
+                        {this.props.viewcount}
+                    </Label>
                     <Card.Content>
                         <Image
                             floated='right'
@@ -104,6 +107,9 @@ export default class Bookmark extends Component{
                         />
                         <Card.Header>{this.props.name}</Card.Header>
                         <Card.Meta>{this.props.link}</Card.Meta>
+                        <Label as='a' style={{backgroundColor:'#2185d0', color:'white'}} ribbon>
+                            Overview
+                        </Label>
                         <Card.Description>
                             {this.props.description}
                         </Card.Description>
