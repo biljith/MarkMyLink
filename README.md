@@ -11,8 +11,10 @@ Depending on the user's bookmark usage the application will recommend other simi
 
 ## Technologies used
 
-1. Google cloud app engine
+1. Heroku app deploy
 2. Golang web app
+3. RabbitMQ
+4. Google Kubernetes Engine
 
 ## Deployment details
 We have set up continuous deployment on Google App Engine as described below :
