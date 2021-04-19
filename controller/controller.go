@@ -6,12 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/tidwall/gjson"
+	"github.com/streadway/amqp"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -30,53 +29,51 @@ type LinkPreviewResponse struct {
 	Url string `bson:"url"`
 }
 
-type LinkCategoryResponse struct {
-	Domain string `bson:"domain"`
-	Success string `bson:"success"`
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
 }
 
-//func failOnError(err error, msg string) {
-//	if err != nil {
-//		log.Fatalf("%s: %s", msg, err)
-//	}
-//}
-//
-//func send(bookmark model.Bookmark){
-//	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-//	failOnError(err, "Failed to connect to RabbitMQ")
-//	defer conn.Close()
-//
-//	//create a channel
-//	ch, err := conn.Channel()
-//	failOnError(err, "Failed to open a channel")
-//	defer ch.Close()
-//
-//	//declare a queue for us to send to
-//	q, err := ch.QueueDeclare(
-//		"task_queue", // name
-//		true,   // durable
-//		false,   // delete when unused
-//		false,   // exclusive
-//		false,   // no-wait
-//		nil,     // arguments
-//	)
-//	failOnError(err, "Failed to declare a queue")
-//
-//	body := bookmark
-//	err = ch.Publish(
-//		"",     // exchange
-//		q.Name, // routing key
-//		false,  // mandatory
-//		false,  // immediate
-//		amqp.Publishing {
-//			DeliveryMode: amqp.Persistent,
-//			ContentType: "application/json",
-//			Body:        []byte(body),
-//		})
-//	failOnError(err, "Failed to publish a message")
-//	log.Printf(" [x] Sent %s", body)
-//
-//}
+func send(bookmark model.Bookmark){
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	failOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
+
+	//create a channel
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	//declare a queue for us to send to
+	q, err := ch.QueueDeclare(
+		"task_queue", // name
+		true,   // durable
+		false,   // delete when unused
+		false,   // exclusive
+		false,   // no-wait
+		nil,     // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	msgBodyBytes := new(bytes.Buffer)
+	json.NewEncoder(msgBodyBytes).Encode(bookmark)
+
+
+	err = ch.Publish(
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
+		amqp.Publishing {
+			DeliveryMode: amqp.Persistent,
+			ContentType: "application/json",
+			Body:     msgBodyBytes.Bytes(),
+		})
+	failOnError(err, "Failed to publish a message")
+	log.Printf(" [x] Sent %s", msgBodyBytes.Bytes())
+
+}
 
 func AddBookmark(w http.ResponseWriter, r *http.Request) {
 	var tl TokenAndLink
@@ -92,56 +89,11 @@ func AddBookmark(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
 		return
 	}
-
 	var bookmark model.Bookmark
 	bookmark.Name = tl.Name
 	bookmark.Link = tl.Link
 	bookmark.Email = session.Email
-	bookmark.Viewcount = 1
-	dt := time.Now()
-	bookmark.Timestamp = dt.String()
-
-	if(!strings.HasPrefix(bookmark.Link, "http://") && !strings.HasPrefix(bookmark.Link, "https://")){
-		bookmark.Link = "http://"+bookmark.Link
-	}
-	classifyurl := "https://www.klazify.com/api/categorize"
-	payload := "{\"url\":\""+bookmark.Link+"\"}\n"
-	linkClassifyAPIKey := os.Getenv("LINK_CLASSIFY_API_KEY")
-
-	client := &http.Client{}
-
-	req, err := http.NewRequest("POST", classifyurl, bytes.NewReader([]byte(payload)))
-
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Bearer "+linkClassifyAPIKey)
-	req.Header.Add("cache-control", "no-cache")
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("couldn't find link category")
-	}
-	defer resp.Body.Close()
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(resp.Body)
-	newStr := buf.String()
-	value := gjson.Get(newStr, "domain.categories.0.name")
-	bookmark.Category = value.String()
-
-	url := "http://api.linkpreview.net/?key=%s&q=%s"
-	linkPreviewAPIKey := os.Getenv("LINK_PREVIEW_API_KEY")
-	res, err := http.Get(fmt.Sprintf(url, linkPreviewAPIKey, bookmark.Link))
-	if err != nil {
-		log.Printf("couldn't find link preview")
-	}
-	defer res.Body.Close()
-	linkPreview := &LinkPreviewResponse{}
-	json.NewDecoder(res.Body).Decode(linkPreview)
-	bookmark.Image = linkPreview.Image
-	bookmark.Description = linkPreview.Description
-	if !model.CreateBookmark(bookmark) {
-		http.Error(w, http.StatusText(409), http.StatusConflict)
-		return
-	}
+	send(bookmark)
 }
 func UpdateBookmark(w http.ResponseWriter, r *http.Request) {
 	var tl TokenAndLink
