@@ -43,6 +43,8 @@ func main() {
 	 	"/updateBookmark", controller.UpdateBookmark)
 	 http.HandleFunc(
 	 	"/deleteBookmark", controller.DeleteBookmark)
+	 http.HandleFunc(
+	 	"/updateBookmarkVisit", controller.UpdateBookmarkVisit)
 	// http.HandleFunc(
 	// 	"/bookmarks", controller.Index)
 	// this is where the web application will listen

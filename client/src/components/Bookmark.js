@@ -93,6 +93,50 @@ export default class Bookmark extends Component{
 	constructor(props) {
 		super(props);
 	}
+    handleDelete = () => {
+        var link = this.props.link
+        var token = localStorage.getItem('token')
+        fetch('/deleteBookmark', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token,
+            link
+          })
+        }).then(
+            function(response) {
+                window.location.reload(false)
+            },
+            function(error) {
+                window.location.reload(false)
+            }
+        );
+    }
+    handleVisit = () => {
+        var link = this.props.link
+        var token = localStorage.getItem('token')
+        var name = this.props.name
+        fetch('/updateBookmarkVisit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token,
+            link,
+            name
+          })
+        }).then(
+            function(response) {
+                window.location.reload(false)
+            },
+            function(error) {
+                window.location.reload(false)
+            }
+        );
+    }
     render() {
         return (
                 <Card>
@@ -108,7 +152,7 @@ export default class Bookmark extends Component{
                         <Card.Header>{this.props.name}</Card.Header>
                         <Card.Meta>{this.props.link}</Card.Meta>
                         <Label as='a' style={{backgroundColor:'#2185d0', color:'white'}} ribbon>
-                            Overview
+                            {this.props.category}
                         </Label>
                         <Card.Description>
                             {this.props.description}
@@ -117,7 +161,7 @@ export default class Bookmark extends Component{
                     <Card.Content extra centered>
                         {/*<div className='ui three buttons' textAlign="center">*/}
                         <Button.Group widths={'3'}>
-                            <Button floated='left' animated={"fade"} as='a' href={'https://'+this.props.link}>
+                            <Button floated='left' animated={"fade"} as='a' href={this.props.link} target={'_blank'} onClick={this.handleVisit}>
                                 <Button.Content hidden>View</Button.Content>
                                 <Button.Content visible>
                                     <Icon name='eye' />

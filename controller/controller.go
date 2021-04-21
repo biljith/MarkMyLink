@@ -117,7 +117,7 @@ func UpdateBookmark(w http.ResponseWriter, r *http.Request) {
 	bookmark.Email = session.Email
 	dt := time.Now()
 	bookmark.Timestamp = dt.String()
-	bookmark.Viewcount = 1
+	bookmark.Viewcount = bookmark.Viewcount + 1
 	url := "http://api.linkpreview.net/?key=%s&q=%s"
 	linkPreviewAPIKey := os.Getenv("LINK_PREVIEW_API_KEY")
 	res, err := http.Get(fmt.Sprintf(url, linkPreviewAPIKey, bookmark.Link))
@@ -130,6 +130,32 @@ func UpdateBookmark(w http.ResponseWriter, r *http.Request) {
 	bookmark.Image = linkPreview.Image
 	bookmark.Description = linkPreview.Description
 	if !model.UpdateBookmark(bookmark) {
+		http.Error(w, http.StatusText(409), http.StatusConflict)
+		return
+	}
+}
+
+func UpdateBookmarkVisit(w http.ResponseWriter, r *http.Request) {
+	var tl TokenAndLink
+	// Check if user is logged in.
+	err := json.NewDecoder(r.Body).Decode(&tl)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	sessionToken := tl.Token
+	session, err := model.FindSession(sessionToken)
+	if err != nil {
+		http.Error(w, http.StatusText(401), http.StatusUnauthorized)
+		return
+	}
+	var bookmark model.Bookmark
+	bookmark.Name = tl.Name
+	bookmark.Link = tl.Link
+	bookmark.Email = session.Email
+	dt := time.Now()
+	bookmark.Timestamp = dt.String()
+	if !model.UpdateBookmarkVisit(bookmark) {
 		http.Error(w, http.StatusText(409), http.StatusConflict)
 		return
 	}

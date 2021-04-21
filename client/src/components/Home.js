@@ -1,7 +1,7 @@
 import { createMedia } from '@artsy/fresnel'
 import PropTypes from 'prop-types'
 import React, { Component, useState, useEffect } from 'react'
-import {Card} from 'semantic-ui-react'
+import {Card, Message} from 'semantic-ui-react'
 import Bookmark, {BookmarkModal} from './Bookmark.js'
 import {
     Button,
@@ -105,9 +105,6 @@ class DesktopContainer extends Component {
                                 <Menu.Item as='a' active>
                                     Home
                                 </Menu.Item>
-                                <Menu.Item as='a'>Work</Menu.Item>
-                                <Menu.Item as='a'>Company</Menu.Item>
-                                <Menu.Item as='a'>Careers</Menu.Item>
                                 <Menu.Item position='right' onClick={this.logout}>
                                     <Button as='a' inverted={!fixed}>
                                         Log Out
@@ -160,7 +157,8 @@ function HomepageLayout(props) {
         }).then(response => response.json())
           .then(function(data) {
             console.log('Billy', data)
-            setBookmarks(data)
+            if (data != null)
+                setBookmarks(data)
             setFetched(true)
           },
           function(err) {
@@ -172,23 +170,24 @@ function HomepageLayout(props) {
     
     return (
     <ResponsiveContainer>
-        <Segment style={{ padding: '8em 0em' }} vertical>
+        {bookmarks.length >0 && <Segment style={{ padding: '8em 0em' }} vertical>
             <Grid stackable verticalAlign='middle' style={{ paddingLeft: '7em' }}>
                 <Grid.Row>
                     <Grid.Column>
                         <Card.Group>
-                            {
-                                bookmarks.map(function(bookmark) {
-                                    return (
-                                        <Bookmark name = { bookmark.Name} link={ bookmark.Link } image = {bookmark.Image} description = {bookmark.Description} viewcount = {bookmark.Viewcount}></Bookmark>
-                                    );
-                                })
-                            }
+                        {
+                            bookmarks.map(function(bookmark) {
+                                        return (
+                                            <Bookmark category = {bookmark.Category} name = { bookmark.Name} link={ bookmark.Link } image = {bookmark.Image} description = {bookmark.Description} viewcount = {bookmark.Viewcount}></Bookmark>
+                                        );
+                                    })
+                        }
                         </Card.Group>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
         </Segment>
+        }
 
 
         <Segment inverted vertical style={{ padding: '5em 0em' }}>
@@ -207,13 +206,13 @@ function HomepageLayout(props) {
                                     <Card.Content>
                                         <Image
                                             floated='right'
-                                            size='mini'
-                                            src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
+                                            size='tiny'
+                                            src='https://pbs.twimg.com/profile_images/1061875848427589632/64oRMSMK_400x400.jpg'
                                         />
                                         <Card.Header>Aakarsh Fadnis</Card.Header>
-                                        <Card.Meta>Friends of Elliot</Card.Meta>
+                                        <Card.Meta>The Pizza Guy</Card.Meta>
                                         <Card.Description>
-                                            Steve wants to add you to the group <strong>best friends</strong>
+                                            Didn't work on this
                                         </Card.Description>
                                     </Card.Content>
                                 </Card>
@@ -221,13 +220,13 @@ function HomepageLayout(props) {
                                         <Card.Content>
                                             <Image
                                                 floated='right'
-                                                size='mini'
-                                                src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
+                                                size='tiny'
+                                                src='https://media-exp1.licdn.com/dms/image/C5603AQFlPjU4YJeFIg/profile-displayphoto-shrink_800_800/0/1571014053446?e=1624492800&v=beta&t=aOZq1AYz4a-e9HGmYwdxp8VjZW7U7ozNDnWt_abObCE'
                                             />
                                             <Card.Header>Abhas Prasad</Card.Header>
-                                            <Card.Meta>Friends of Elliot</Card.Meta>
+                                            <Card.Meta>Chief Moaney Officer</Card.Meta>
                                             <Card.Description>
-                                                Steve wants to add you to the group <strong>best friends</strong>
+                                                Always here for a beer hug
                                             </Card.Description>
                                         </Card.Content>
                                     </Card>
@@ -235,13 +234,13 @@ function HomepageLayout(props) {
                                     <Card.Content>
                                         <Image
                                             floated='right'
-                                            size='mini'
-                                            src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
+                                            size='tiny'
+                                            src='https://media-exp1.licdn.com/dms/image/C5603AQGrPttQ0WmXKA/profile-displayphoto-shrink_200_200/0/1569602711283?e=1623888000&v=beta&t=pl2u2dNib_ZX7gRr7WT8WagemJm58EsQr5qjoy84fF8'
                                         />
                                         <Card.Header>Biljith Thadichi</Card.Header>
-                                        <Card.Meta>Friends of Elliot</Card.Meta>
+                                        <Card.Meta>Floof Stack</Card.Meta>
                                         <Card.Description>
-                                            Steve wants to add you to the group <strong>best friends</strong>
+                                            Friend of the "IIT"
                                         </Card.Description>
                                     </Card.Content>
 
@@ -250,13 +249,13 @@ function HomepageLayout(props) {
                                     <Card.Content>
                                         <Image
                                             floated='right'
-                                            size='mini'
-                                            src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
+                                            size='tiny'
+                                            src='https://media-exp1.licdn.com/dms/image/C5103AQE69iEyoIbdyA/profile-displayphoto-shrink_200_200/0/1568336944247?e=1623888000&v=beta&t=SS8XrpcgZIChoR1czwb9EIgKJn53RgXd8qlMsDyCPU0'
                                         />
                                         <Card.Header>Sid Keshkar</Card.Header>
-                                        <Card.Meta>Friends of Elliot</Card.Meta>
+                                        <Card.Meta>"Back" end</Card.Meta>
                                         <Card.Description>
-                                            Steve wants to add you to the group <strong>best friends</strong>
+                                            The IIT
                                         </Card.Description>
                                     </Card.Content>
 

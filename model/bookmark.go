@@ -83,6 +83,28 @@ func UpdateBookmark(bookmark Bookmark) bool {
 	return false
 }
 
+
+//Update view count on visit
+func UpdateBookmarkVisit(bookmark Bookmark) bool {
+
+	opts := options.Update().SetUpsert(true)
+	filter := bson.D{{"email", bookmark.Email},{Key: "link" , Value: bookmark.Link}}
+	update := bson.D{{"$inc", bson.D{{"viewcount", 1}}}}
+
+	result, err := config.BookmarkCollection.UpdateOne(context.TODO(), filter, update, opts)
+
+	if result.MatchedCount != 0 {
+		fmt.Println("matched and replaced an existing document")
+		return true
+	}
+	if result.UpsertedCount != 0 {
+		fmt.Printf("inserted a new document with ID %v\n", result.UpsertedID)
+		return true
+	}
+	log.Fatal(err)
+	return false
+}
+
 // delete at most one bookmark in which the bookmark fields email and link match,
 //Returns true if the operation was successful, false otherwise
 func DeleteBookmark(bookmark Bookmark) bool {
