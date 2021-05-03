@@ -32,7 +32,7 @@ Points of Focus
 | ----------- | --------- |
 | Web Application used | Native GoLang  |
 | Data Collection Batch Worker | NA |
-| Data Analyzer | LinkPreview and Klazify API |
+| Data Analyzer | LinkPreview and Klazify |
 | Unittests | Go tests (available in this project wiki) |
 | Data Persistence | MongoDB Atlas (available in this project wiki) |
 | API Endpoints | LinkPreview, Klazify API and REST API for the web service we have deployed on Heroku |
@@ -45,6 +45,4 @@ Points of Focus
 | Event Collaboratiob Messaging | RabbitMQ (details available in this wiki) |
 | Continuous Delivery | Heroku CD |
 | Participation | details available in wiki |
-
-
 
