@@ -31,7 +31,7 @@ Points of Focus
 | Area | Product/Service used |
 | ----------- | --------- |
 | Web Application used | Native GoLang  |
-| Data Collection Batch Worker | NA |
+| Data Collection Batch Worker | Process Link Worker Provided above|
 | Data Analyzer | LinkPreview and Klazify |
 | Unittests | Go tests (available in this project wiki) |
 | Data Persistence | MongoDB Atlas (available in this project wiki) |
@@ -44,5 +44,5 @@ Points of Focus
 | Acceptance Tests | Demo video /Acceptance test provided in presentation |
 | Event Collaboratiob Messaging | RabbitMQ (details available in this wiki) |
 | Continuous Delivery | Heroku CD |
-| Participation | details available in wiki |
+| Participation | details available in wiki/presentation |
 
