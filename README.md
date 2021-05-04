@@ -38,7 +38,7 @@ https://github.com/Casecarsid/ProcessLinkWorker
 | Data Persistence | MongoDB Atlas (available in this project wiki) |
 | API Endpoints | LinkPreview, Klazify API and REST API for the web service we have deployed on Heroku |
 | Product Environment | Heroku Deployment Service |
-| Integration Testing | NA |
+| Integration Testing | Done Manually using Postman |
 | Mock Objects | Mocked Bookmark objects for categorizing and describing bookmarks |
 | Continuous Integration | Heroku CI |
 | Production Monitoring | Heroku |
